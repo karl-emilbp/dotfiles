@@ -2,7 +2,18 @@
 Repository holding configs and dotfiles.
 
 ## Tmux
-Configurations for the terminal multiplexer `tmux`.
+```
+├── tmux.conf
+```
 
 ## Git
-.gitignore
+```
+├── .gitignore
+```
+
+## Claude
+```
+├── CLAUDE.md
+├── .claude
+│   ├── settings.json
+```
