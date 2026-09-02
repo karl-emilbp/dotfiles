@@ -1,8 +1,8 @@
 # Configs
-Repository holding personal configurations.
+Repository holding configs and dotfiles.
 
 ## Tmux
 Configurations for the terminal multiplexer `tmux`.
 
-## Rust
-Currently holds toml file for rust cross compilation using `cross-rs`.
+## Git
+.gitignore
