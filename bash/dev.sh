@@ -11,42 +11,37 @@ set -euo pipefail
 
 # Layout
 RIGHT_WIDTH="38%"     # width of the right column
-LEFT2_HEIGHT="25%"    # height of LEFT2 within the left column
-RIGHT2_HEIGHT="50%"   # height of RIGHT2 within the right column
+RIGHT2_HEIGHT="50%"   # height of RIGHT2 within the right column (50% = equal halves)
 
 # Command to start in each pane ("" = just a shell)
-LEFT1_CMD="nvim ."
-LEFT2_CMD=""
+LEFT_CMD="nvim ."
 RIGHT1_CMD=""
 RIGHT2_CMD=""
 
-FOCUS="LEFT1"         # pane to focus on open: LEFT1, LEFT2, RIGHT1 or RIGHT2
+FOCUS="LEFT"          # pane to focus on open: LEFT, RIGHT1 or RIGHT2
 
 dir=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
 name=$(basename "$dir" | tr '.: ' '___')
 
 open_workspace() {
   if ! tmux has-session -t "=$name" 2>/dev/null; then
-    local cols lines left1 left2 right1 right2
+    local cols lines left right1 right2
     cols=$(tput cols 2>/dev/null || echo 250)
     lines=$(tput lines 2>/dev/null || echo 65)
 
-    left1=$(tmux new-session -d -P -F '#{pane_id}' -s "$name" -n main -c "$dir" -x "$cols" -y "$lines")
-    right1=$(tmux split-window -h -P -F '#{pane_id}' -t "$left1" -l "$RIGHT_WIDTH" -c "$dir")
+    left=$(tmux new-session -d -P -F '#{pane_id}' -s "$name" -n main -c "$dir" -x "$cols" -y "$lines")
+    right1=$(tmux split-window -h -P -F '#{pane_id}' -t "$left" -l "$RIGHT_WIDTH" -c "$dir")
     right2=$(tmux split-window -v -P -F '#{pane_id}' -t "$right1" -l "$RIGHT2_HEIGHT" -c "$dir")
-    left2=$(tmux split-window -v -P -F '#{pane_id}' -t "$left1" -l "$LEFT2_HEIGHT" -c "$dir")
 
     run_in() { if [ -n "$2" ]; then tmux send-keys -t "$1" "$2" Enter; fi; }
-    run_in "$left1" "$LEFT1_CMD"
-    run_in "$left2" "$LEFT2_CMD"
+    run_in "$left" "$LEFT_CMD"
     run_in "$right1" "$RIGHT1_CMD"
     run_in "$right2" "$RIGHT2_CMD"
 
     case "$FOCUS" in
-      LEFT2) tmux select-pane -t "$left2" ;;
       RIGHT1) tmux select-pane -t "$right1" ;;
       RIGHT2) tmux select-pane -t "$right2" ;;
-      *) tmux select-pane -t "$left1" ;;
+      *) tmux select-pane -t "$left" ;;
     esac
   fi
 
