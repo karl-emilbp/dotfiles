@@ -56,12 +56,21 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ## Comments and docstrings
 
-Comments and docstrings describe what a function or block of code does and when to use it.
+- Never add code comments or docstrings. I write all comments myself.
+- Do not modify or delete existing comments unless the code they describe is removed. 
 
-- Default to a one-line description.
-- Describe the function only as it exists now.
-- NEVER mention: what changed, how it differs from a previous version, how the
-  edit affects callers, before/after behavior, or migration notes. That content
-  belongs in the commit message or PR description, not the docstring.
-- Only document a parameter or return value when its meaning isn't already clear
-  from its name and type hint. Don't restate types that are in the signature.
+## Verification and testing
+
+Verification that involves the application UI is done manually by developer, never by you.
+Reason: the UIs are connected to live trading systems and production data, and
+an automated interaction could have real financial consequences.
+
+- Do NOT run, launch, or interact with any application UI to verify changes.
+  This includes starting the app, using browser automation (Playwright, Puppeteer,
+  Chrome tools), curling UI or API endpoints, or clicking through flows.
+- In plans, write the Verification section as a checklist for the developer to perform,
+  under the heading "Manual Verification". Describe what to click, what input to use, and what result to expect.
+- You MAY run: unit tests, type checks, linters, and builds that need no network
+  access or credentials. List these separately under "Automated Verification".
+- If you're unsure whether a check touches a UI, a live service, or production,
+  treat it as manual and ask.
